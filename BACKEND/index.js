@@ -1,5 +1,7 @@
 const restify = require('restify');
 const errs = require('restify-errors');
+const cors = require('cors');
+
 const server = restify.createServer({
   name: 'myapp',
   version: '1.0.0'
@@ -20,13 +22,13 @@ var knex = require('knex')({
     }
   });
   
-  server.use(restify.plugins.acceptParser(server.acceptable));
-  server.use(restify.plugins.queryParser());
-  server.use(restify.plugins.bodyParser());
-    
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.queryParser());
+server.use(restify.plugins.bodyParser());
+server.use(cors());  
 
 
-server.listen(8080, function() {
+server.listen(8000, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
 
@@ -34,7 +36,7 @@ server.listen(8080, function() {
 
 
 server.get('/api/produtos', (req, res, next) => { 
-    
+
     knex('TB_PRODUTO').then((dados) => {
         res.send(dados);
     }, next)
