@@ -43,8 +43,8 @@
             <td>{{produto.quantidade}}</td>
             <td>{{produto.valor}}</td>
             <td>
-              <button class="waves-effect btn-small blue darken-1"><i class="material-icons">create</i></button>
-              <button class="waves-effect btn-small red darken-1"><i class="material-icons">delete_sweep</i></button>
+              <button @click="editar(produto)" class="waves-effect btn-small blue darken-1"><i class="material-icons">create</i></button>
+              <button @click="remover(produto)" class="waves-effect btn-small red darken-1"><i class="material-icons">delete_sweep</i></button>
             </td>
 
           </tr>
@@ -66,29 +66,57 @@
    data(){
      return{
        produto:{
+         id:'',
          nome: '',
          quantidade:'',
          valor:''
        },
        produtos: []
+       
      }
    },
 
    mounted() {
-      Produto.listar().then(res =>{
-        console.log(res.data)
-        this.produtos = res.data
-      })
+      this.listar()
     },
 
     methods: {
+
+      listar(){
+        Produto.listar().then(res =>{
+        console.log(res.data)
+        this.produtos = res.data
+        })
+      },
+
       salvar(){
-        alert('teste')
+
+        if(!this.produto.id){
+          this.produto = {}
         Produto.salvar(this.produto).then(res =>{
           alert('salvo com sucesso')
+          this.listar()
         })
+        }else{
+          this.produto = {}
+        Produto.atualizar(this.produto).then(res =>{
+          alert('atualizado com sucesso')
+          this.listar()
+        })
+        }
         
+      },
+      
+      editar(produto){
+        this.produto = produto  
+      },
+      
+      remover(produto){
+        Produto.apagar(produto).then(res =>{
+          this.listar()
+        })
       }
+
     }
 
   }
